@@ -55,6 +55,7 @@ async def check_septic(request: HttpRequest, *_args, **_kwargs) -> JsonResponse:
     ---
     200 -> Request completed successfully and true/false determination was made
     204 -> Request completed successfully; but true/false determination could not be made
+    400 -> Request was improperly formatted or has an invalid set of arguments
     500 -> Request failed due internal error: I.e. Could not connect to external API
 
     Response Formats
