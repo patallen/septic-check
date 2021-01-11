@@ -16,4 +16,6 @@ Including another URLconf
 
 from django.urls import path
 
-urlpatterns = []
+from api.views import CheckHomeHasSeptic
+
+urlpatterns = [path("check-septic", CheckHomeHasSeptic.as_view())]
