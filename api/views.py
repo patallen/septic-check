@@ -1,7 +1,10 @@
+from django.conf import settings
 from django.http import HttpRequest, JsonResponse
 from django.views import View
+from django.http import response
 
 from api.validators import validate_arguments, ValidationError
+from api.external import HouseCanaryApi, NotFoundError, UnknownError
 
 
 class CheckHomeHasSeptic(View):
@@ -40,3 +43,24 @@ class CheckHomeHasSeptic(View):
             return response.JsonResponse(
                 {"message": error.message, "data": error.fields}, status=400
             )
+
+        api = HouseCanaryApi(
+            base_url=settings.HOUSE_CANARY_BASE_URL,
+            api_key=settings.HOUSE_CANARY_API_KEY,
+            api_secret=settings.HOUSE_CANARY_API_SECRET,
+        )
+
+        try:
+            home_details = api.fetch_home_details(**arguments)
+        except NotFoundError:
+            return JsonResponse({"message": "property not found"}, status=204)
+        except UnknownError:
+            return JsonResponse({"message": "an unknown error occurred"}, status=500)
+
+        try:
+            sewer_info = home_details["sewer"]
+        except KeyError:
+            return JsonResponse(status=204)
+
+        has_septic = sewer_info and sewer_info.lower() == "septic"
+        return JsonResponse({"result": has_septic})
