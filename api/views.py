@@ -1,4 +1,8 @@
+from django.http import HttpRequest, JsonResponse
 from django.views import View
+
+from api.validators import validate_arguments, ValidationError
+
 
 class CheckHomeHasSeptic(View):
     def get(self, request: HttpRequest, *_args, **_kwargs) -> JsonResponse:
@@ -29,3 +33,10 @@ class CheckHomeHasSeptic(View):
             Content-Type: application/json
             {"result": true}
         """
+
+        try:
+            arguments = validate_arguments(request.GET)
+        except ValidationError as error:
+            return response.JsonResponse(
+                {"message": error.message, "data": error.fields}, status=400
+            )
