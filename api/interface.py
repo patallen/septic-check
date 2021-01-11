@@ -15,5 +15,5 @@ class NotFoundError(Exception):
 
 class AbstractHouseCanaryApi(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def fetch_home_details(self, address: str, zipcode: str) -> dict:
+    async def fetch_home_details(self, address: str, zipcode: str) -> dict:
         pass

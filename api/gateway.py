@@ -1,6 +1,11 @@
-import requests
+import httpx
 
 from api import interface
+
+
+async def async_fetch(url, params, auth, timeout):
+    async with httpx.AsyncClient() as client:
+        return await client.get(url, params=params, auth=auth, timeout=timeout)
 
 
 class HouseCanaryApi(interface.AbstractHouseCanaryApi):
@@ -16,7 +21,7 @@ class HouseCanaryApi(interface.AbstractHouseCanaryApi):
 
         return f"{self._url.rstrip('/')}/property/details"
 
-    def fetch_home_details(self, address: str, zipcode: str) -> dict:
+    async def fetch_home_details(self, address: str, zipcode: str) -> dict:
         """Pull property-level data for a property from HouseCanary web API"""
 
         url = self.build_url()
@@ -25,7 +30,13 @@ class HouseCanaryApi(interface.AbstractHouseCanaryApi):
             "address": address,
             "zipcode": zipcode,
         }
-        response = requests.get(url, params=params, auth=self._auth)
+
+        try:
+            response = await async_fetch(
+                url, params=params, auth=self._auth, timeout=self._timeout
+            )
+        except httpx.RequestError:
+            raise interface.UnknownError("an unknown error occurred")
 
         if response.status_code == 204:
             raise interface.NotFoundError("property not found")

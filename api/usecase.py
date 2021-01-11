@@ -29,11 +29,11 @@ class CheckSeptic:
     def __init__(self, house_canary_api: interface.AbstractHouseCanaryApi) -> None:
         self.house_canary = house_canary_api
 
-    def execute(self, request: CheckSepticRequest) -> CheckSepticResponse:
+    async def execute(self, request: CheckSepticRequest) -> CheckSepticResponse:
         """Determine if property for address described within :request: has a septic system."""
 
         try:
-            home_details = self.house_canary.fetch_home_details(
+            home_details = await self.house_canary.fetch_home_details(
                 request.address, request.zipcode
             )
         except interface.NotFoundError:

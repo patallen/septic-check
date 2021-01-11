@@ -14,41 +14,41 @@ class UseCaseTests(SimpleTestCase):
         }
     )
 
-    def test_use_case_not_found(self):
+    async def test_use_case_not_found(self):
         use_case = CheckSeptic(self.gateway)
 
         request = CheckSepticRequest(address="this is no address", zipcode="92010")
-        response = use_case.execute(request)
+        response = await use_case.execute(request)
 
         self.assertTrue(response.has_error())
         self.assertEquals(response.error_type, interface.NOT_FOUND_ERROR)
         self.assertIsNone(response.result)
 
-    def test_use_case_found_not_septic(self):
+    async def test_use_case_found_not_septic(self):
         use_case = CheckSeptic(self.gateway)
 
         request = CheckSepticRequest(address="9390 Readcrest Dr", zipcode="90210")
-        response = use_case.execute(request)
+        response = await use_case.execute(request)
 
         self.assertFalse(response.has_error())
         self.assertIsNone(response.error_type)
         self.assertFalse(response.result)
 
-    def test_use_case_found_has_septic(self):
+    async def test_use_case_found_has_septic(self):
         use_case = CheckSeptic(self.gateway)
 
         request = CheckSepticRequest(address="10 Gotham Manor", zipcode="53540")
-        response = use_case.execute(request)
+        response = await use_case.execute(request)
 
         self.assertFalse(response.has_error())
         self.assertIsNone(response.error_type)
         self.assertTrue(response.result)
 
-    def test_use_case_insufficient_data(self):
+    async def test_use_case_insufficient_data(self):
         use_case = CheckSeptic(self.gateway)
 
         request = CheckSepticRequest(address="22 no data dr", zipcode="00000")
-        response = use_case.execute(request)
+        response = await use_case.execute(request)
 
         self.assertTrue(response.has_error())
         self.assertEquals(response.error_type, interface.NO_DATA_ERROR)

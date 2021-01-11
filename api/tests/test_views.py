@@ -34,23 +34,25 @@ class CheckSepticViewTests(SimpleTestCase):
             response.json(), {"message": "invalid arguments", "data": ["pool"]},
         )
 
-    @mock.patch("requests.get", side_effect=mocked_requests_get)
+    @mock.patch("api.gateway.async_fetch", side_effect=mocked_requests_get)
     def test_external_has_septic(self, _mock_get):
         response = self.client.get("/check-septic?address=10 Marley Way&zipcode=00000")
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["result"])
 
-    @mock.patch("requests.get", side_effect=mocked_requests_get_no_content)
+    @mock.patch("api.gateway.async_fetch", side_effect=mocked_requests_get_no_content)
     def test_external_no_property_found(self, _mock_get):
         response = self.client.get("/check-septic?address=10 Marley Way&zipcode=00000")
         self.assertEqual(response.status_code, 204)
 
-    @mock.patch("requests.get", side_effect=mocked_requests_get_no_content)
+    @mock.patch("api.gateway.async_fetch", side_effect=mocked_requests_get_no_content)
     def test_external_no_property_found(self, _mock_get):
         response = self.client.get("/check-septic?address=10 Marley Way&zipcode=00000")
         self.assertEqual(response.status_code, 204)
 
-    @mock.patch("requests.get", side_effect=mocked_requests_get_internal_error)
+    @mock.patch(
+        "api.gateway.async_fetch", side_effect=mocked_requests_get_internal_error
+    )
     def test_external_no_property_found(self, _mock_get):
         response = self.client.get("/check-septic?address=10 Marley Way&zipcode=00000")
         self.assertEqual(response.status_code, 500)

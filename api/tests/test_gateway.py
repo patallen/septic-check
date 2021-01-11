@@ -12,14 +12,15 @@ from api.tests.mocks import (
 
 
 class HouseCanaryApiTests(SimpleTestCase):
-    @mock.patch("requests.get", side_effect=mocked_requests_get)
-    def test_requests_get_called_properly(self, mocked_get: mock.Mock):
+    @mock.patch("api.gateway.async_fetch", side_effect=mocked_requests_get)
+    async def test_requests_get_called_properly(self, mocked_get: mock.Mock):
         api = HouseCanaryApi("https://example.com", "api_key", "secret")
-        _ = api.fetch_home_details("21 Flint st", "02145")
+        _ = await api.fetch_home_details("21 Flint st", "02145")
         mocked_get.assert_called_with(
             "https://example.com/property/details",
             auth=("api_key", "secret"),
             params={"address": "21 Flint st", "zipcode": "02145"},
+            timeout=10,
         )
 
     def test_build_url_generates_correct_url(self):
@@ -32,22 +33,23 @@ class HouseCanaryApiTests(SimpleTestCase):
         url = api.build_url()
         self.assertEqual(url, "https://example.com/property/details")
 
-    @mock.patch("requests.get", side_effect=mocked_requests_get)
-    def test_fetch_home_details_returns_only_property_details(self, _mocked_get):
+    async def test_fetch_home_details_returns_only_property_details(self):
         api = HouseCanaryApi("https://example.com/", "", "")
         url = api.build_url()
         self.assertEqual(url, "https://example.com/property/details")
 
-    @mock.patch("requests.get", side_effect=mocked_requests_get_no_content)
-    def test_fetch_home_details_raises_NotFoundError_for_204(self, _mocked_get):
+    @mock.patch("api.gateway.async_fetch", side_effect=mocked_requests_get_no_content)
+    async def test_fetch_home_details_raises_NotFoundError_for_204(self, _mocked_get):
         api = HouseCanaryApi("https://example.com/", "", "")
         with self.assertRaises(NotFoundError):
-            _ = api.fetch_home_details("1000 doesn't exist", "90210")
+            _ = await api.fetch_home_details("1000 doesn't exist", "90210")
 
-    @mock.patch("requests.get", side_effect=mocked_requests_get_internal_error)
-    def test_fetch_home_details_raises_NotFoundError_for_internal_error(
+    @mock.patch(
+        "api.gateway.async_fetch", side_effect=mocked_requests_get_internal_error
+    )
+    async def test_fetch_home_details_raises_NotFoundError_for_internal_error(
         self, _mocked_get
     ):
         api = HouseCanaryApi("https://example.com/", "", "")
         with self.assertRaises(UnknownError):
-            _ = api.fetch_home_details("1000 doesn't exist", "90210")
+            _ = await api.fetch_home_details("1000 doesn't exist", "90210")
