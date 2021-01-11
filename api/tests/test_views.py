@@ -31,8 +31,7 @@ class CheckSepticViewTests(SimpleTestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertDictEqual(
-            response.json(),
-            {"message": "invalid arguments", "data": ["pool"]},
+            response.json(), {"message": "invalid arguments", "data": ["pool"]},
         )
 
     @mock.patch("requests.get", side_effect=mocked_requests_get)

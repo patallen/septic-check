@@ -19,11 +19,7 @@ def mocked_requests_get(*_args, **_kwargs):
             "property/details": {
                 "api_code_description": "ok",
                 "api_code": 0,
-                "result": {
-                    "property": {
-                        "sewer": "Septic",
-                    },
-                },
+                "result": {"property": {"sewer": "Septic",},},
             }
         },
     )
