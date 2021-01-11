@@ -1,5 +1,4 @@
 import abc
-from typing import Optional
 
 NOT_FOUND_ERROR = "NOT_FOUND"
 UNKNOWN_ERROR = "UNKNOWN_ERROR"

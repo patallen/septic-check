@@ -1,5 +1,6 @@
-from api.interface import AbstractHouseCanaryApi, NotFoundError
 from typing import Dict, List
+
+from api.interface import AbstractHouseCanaryApi, NotFoundError
 
 
 class ResponseMock:
@@ -11,7 +12,7 @@ class ResponseMock:
         return self._json
 
 
-def mocked_requests_get(*args, **kwargs):
+def mocked_requests_get(*_args, **_kwargs):
     return ResponseMock(
         200,
         {
@@ -28,11 +29,11 @@ def mocked_requests_get(*args, **kwargs):
     )
 
 
-def mocked_requests_get_internal_error(*args, **kwargs):
+def mocked_requests_get_internal_error(*_args, **_kwargs):
     return ResponseMock(500)
 
 
-def mocked_requests_get_no_content(*args, **kwargs):
+def mocked_requests_get_no_content(*_args, **_kwargs):
     return ResponseMock(204)
 
 

@@ -1,5 +1,4 @@
 import requests
-import pathlib
 
 from api import interface
 
@@ -34,4 +33,4 @@ class HouseCanaryApi(interface.AbstractHouseCanaryApi):
         if response.status_code != 200:
             raise interface.UnknownError("an unknown error occurred")
 
-        return response.json()
+        return response.json()["property/details"]["result"]["property"]

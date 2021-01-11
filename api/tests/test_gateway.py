@@ -2,13 +2,12 @@ from unittest import mock
 
 from django.test import SimpleTestCase
 
-from api.interface import NotFoundError, UnknownError
 from api.gateway import HouseCanaryApi
-
+from api.interface import NotFoundError, UnknownError
 from api.tests.mocks import (
+    mocked_requests_get,
     mocked_requests_get_internal_error,
     mocked_requests_get_no_content,
-    mocked_requests_get,
 )
 
 
@@ -16,7 +15,7 @@ class HouseCanaryApiTests(SimpleTestCase):
     @mock.patch("requests.get", side_effect=mocked_requests_get)
     def test_requests_get_called_properly(self, mocked_get: mock.Mock):
         api = HouseCanaryApi("https://example.com", "api_key", "secret")
-        details = api.fetch_home_details("21 Flint st", "02145")
+        _ = api.fetch_home_details("21 Flint st", "02145")
         mocked_get.assert_called_with(
             "https://example.com/property/details",
             auth=("api_key", "secret"),

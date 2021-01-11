@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 
-from api.validators import validate_arguments, ValidationError
+from api.validators import ValidationError, validate_arguments
 
 
 class ValidationTests(SimpleTestCase):

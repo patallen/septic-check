@@ -1,8 +1,8 @@
 from django.test import SimpleTestCase
 
+from api import interface
 from api.tests.mocks import MockHouseCanaryApi
 from api.usecase import CheckSeptic, CheckSepticRequest
-from api import interface
 
 
 class UseCaseTests(SimpleTestCase):

@@ -1,9 +1,8 @@
 from django.http import JsonResponse
 
 from api import interface
-from api.validators import ValidationError
 from api.usecase import CheckSepticResponse
-
+from api.validators import ValidationError
 
 _ERROR_TYPE_TO_STATUS = {
     interface.NOT_FOUND_ERROR: (204, "property not found"),

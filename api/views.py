@@ -2,11 +2,10 @@ from django.conf import settings
 from django.http import HttpRequest, JsonResponse
 from django.views import View
 
-from api import interface
 from api.gateway import HouseCanaryApi
 from api.response import render_usecase_response, render_validation_response
-from api.validators import validate_arguments, ValidationError
 from api.usecase import CheckSeptic
+from api.validators import ValidationError, validate_arguments
 
 
 class CheckHomeHasSeptic(View):

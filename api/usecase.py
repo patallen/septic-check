@@ -1,6 +1,7 @@
-from api import interface
-from typing import Optional
 from dataclasses import dataclass
+from typing import Optional
+
+from api import interface
 
 
 @dataclass

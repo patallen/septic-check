@@ -3,9 +3,9 @@ from unittest import mock
 from django.test import SimpleTestCase
 
 from api.tests.mocks import (
+    mocked_requests_get,
     mocked_requests_get_internal_error,
     mocked_requests_get_no_content,
-    mocked_requests_get,
 )
 
 
