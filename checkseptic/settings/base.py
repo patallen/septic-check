@@ -10,7 +10,7 @@ INSTALLED_APPS = ["django.contrib.contenttypes", "api"]
 MIDDLEWARE = []
 
 ROOT_URLCONF = "checkseptic.urls"
-WSGI_APPLICATION = "checkseptic.wsgi.application"
+ASGI_APPLICATION = "checkseptic.asgi.application"
 
 <<<<<<< HEAD
 HOUSE_CANARY_API_KEY = os.environ.get("HOUSE_CANARY_API_KEY")
