@@ -2,7 +2,8 @@ from unittest import mock
 
 from django.test import SimpleTestCase
 
-from api.external import NotFoundError, UnknownError, HouseCanaryApi
+from api.interface import NotFoundError, UnknownError
+from api.gateway import HouseCanaryApi
 
 from api.tests.mocks import (
     mocked_requests_get_internal_error,

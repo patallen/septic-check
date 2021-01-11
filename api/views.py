@@ -1,10 +1,12 @@
 from django.conf import settings
 from django.http import HttpRequest, JsonResponse
 from django.views import View
-from django.http import response
 
+from api import interface
+from api.gateway import HouseCanaryApi
+from api.response import render_usecase_response, render_validation_response
 from api.validators import validate_arguments, ValidationError
-from api.external import HouseCanaryApi, NotFoundError, UnknownError
+from api.usecase import CheckSeptic
 
 
 class CheckHomeHasSeptic(View):
@@ -17,7 +19,7 @@ class CheckHomeHasSeptic(View):
         Status Code Meaning:
         ---
         200 -> Request completed successfully and true/false determination was made
-        204 -> Request completed successfully, but true/false determination could not be made
+        204 -> Request completed successfully; but true/false determination could not be made
         500 -> Request failed due internal error: I.e. Could not connect to external API
 
         Response Formats
@@ -40,9 +42,7 @@ class CheckHomeHasSeptic(View):
         try:
             arguments = validate_arguments(request.GET)
         except ValidationError as error:
-            return response.JsonResponse(
-                {"message": error.message, "data": error.fields}, status=400
-            )
+            return render_validation_response(error)
 
         api = HouseCanaryApi(
             base_url=settings.HOUSE_CANARY_BASE_URL,
@@ -50,17 +50,8 @@ class CheckHomeHasSeptic(View):
             api_secret=settings.HOUSE_CANARY_API_SECRET,
         )
 
-        try:
-            home_details = api.fetch_home_details(**arguments)
-        except NotFoundError:
-            return JsonResponse({"message": "property not found"}, status=204)
-        except UnknownError:
-            return JsonResponse({"message": "an unknown error occurred"}, status=500)
+        use_case = CheckSeptic(house_canary_api=api)
+        uc_request = use_case.Request.from_dict(arguments)
+        result = use_case.execute(uc_request)
 
-        try:
-            sewer_info = home_details["sewer"]
-        except KeyError:
-            return JsonResponse(status=204)
-
-        has_septic = sewer_info and sewer_info.lower() == "septic"
-        return JsonResponse({"result": has_septic})
+        return render_usecase_response(result)
