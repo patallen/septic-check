@@ -33,7 +33,7 @@ class HouseCanaryApiTests(SimpleTestCase):
         url = api.build_url()
         self.assertEqual(url, "https://example.com/property/details")
 
-    async def test_fetch_home_details_returns_only_property_details(self):
+    def test_fetch_home_details_returns_only_property_details(self):
         api = HouseCanaryApi("https://example.com/", "", "")
         url = api.build_url()
         self.assertEqual(url, "https://example.com/property/details")
