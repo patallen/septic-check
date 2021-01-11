@@ -27,7 +27,7 @@ HOUSE_CANARY_API_SECRET=<string> \
 
 Try it:
 ```
-curl https://localhost:8000/check-septic?address=<address>&zipcode=<zipcode>
+curl http://localhost:8000/check-septic?address=<address>&zipcode=<zipcode>
 ```
 
 ## API Documentation
