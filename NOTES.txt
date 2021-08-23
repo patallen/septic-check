@@ -1,0 +1,35 @@
+Scalability
+  - Proper load balancing
+  - Webserver such as gunicorn can handle many open connections
+  - No memory concerns, but response time/open connection time will be dependent on call to external API
+  - Caching would not be very effective - would be rare to call this endpoint multiple times with same inputs. (The need to scale will arise from requests for unique locations)
+  - Multiple details sources could be used; not only as failover, but to distribute load across external APIs
+  - External api reqeust timeouts & retries
+
+Security
+  - No auth necessary provided that the api access is properly controlled within the VPC
+  - API does not store any data, so privacy concerns are minimal
+  - API credentials should be managed with a key management service
+
+API Design
+  - Return result as direct response to request.
+  - Query-string encoded inputs:
+    * Doesn't feel perfect, but does allow for different fields to be used if requred by source other than HouseCanary
+    * No POST required - wouldn't be terrible, but generally POST is used to create a resource
+  - Considered DRF, but without even the need for serializers or authentication, this felt like overkill
+  - JSON response - common & easy-to-use format. This usecase wouldn't require anything more complex
+
+Implementation
+  - Python/Django
+  - Layers:
+    use case: High level component responsible for "check has septic" action
+    views: controller responsible for deserializing request, building use case
+    gateway: Implements api defined by use case; used for retrieving property details.
+
+Discussion:
+  - GET vs POST - requirements don't fit REST standard. Normally, I would adhere to internal standards.
+    * GET - not returning resource; query parameters are generally used for filtering and are not required
+        ** Note: if M2M, we could use json in the request body to hold parameters
+    * POST - we would not be creating a resource, and we would be returning a response body.
+  - Swapping API / Multiple APIs:
+    *
